@@ -7,7 +7,7 @@ def AnalyzerNumber():
     for i in range(1, number + 1):
         if number % i == 0:
             divisors.append(i)
-    
+
     print(f"Делители числа {number}: ", divisors)
 
     simple_number(number)
@@ -20,7 +20,7 @@ def simple_number(number):
             print(f"Число {number} не является простым")
             f = False
             break
-    
+
     if f == True:
         print(f"Число {number} является простым")
 
@@ -41,5 +41,5 @@ def input_numbers_only():
         else:
             print("Ошибка: вводите только числа!")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     AnalyzerNumber()
