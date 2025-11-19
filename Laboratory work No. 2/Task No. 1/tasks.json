@@ -1,0 +1,22 @@
+[
+  {
+    "description": "Сделать домашку по Python",
+    "status": false,
+    "category": "#учёба"
+  },
+  {
+    "description": "Сходить в зал",
+    "status": true,
+    "category": "#спорт"
+  },
+  {
+    "description": "Посмотреть фильм",
+    "status": false,
+    "category": "#отдых"
+  },
+  {
+    "description": "тренировка",
+    "status": false,
+    "category": "#спорт"
+  }
+]
