@@ -7,7 +7,17 @@ def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 BASE_DIR = Path(__file__).parent 
-FILENAME = BASE_DIR / "tasks.json" 
+FILENAME = BASE_DIR / "tasks.json"
+
+def check_number(number: int):
+    if number:
+        input("\nОшибка: номер не может быть пустым.\nНажмите любую кнопку для продолжения...")
+        return False
+    elif not number.isdigit():
+        input("\nОшибка: номер должен быть числом\nНажмите любую кнопку для продолжения...")
+        return False
+    else:
+        return True
 
 class Task:
     def  __init__(self, description: str, status: bool = False, category: str | None = None):
@@ -64,23 +74,29 @@ class TaskTracker:
             return self._tasks[index]
         raise IndexError("Нет задачи с таким индексом")
     
-    def _status_done(self, index: int) -> None:
-        self._get_task(index)._status_done()
+    def _task_done(self, index: int) -> None:
+        if 0 <= index < len(self._tasks):
+            self._get_task(index)._status_done()
+        else:
+            raise IndexError("Нет задачи с таким индексом")
     
-    def _status_undone(self, index: int) -> None:
+    def _task_undone(self, index: int) -> None:
         self._get_task(index)._status_undone()
-
+        if 0 <= index < len(self._tasks):
+            self._get_task(index)._status_undone()
+        else:
+            raise IndexError("Нет задачи с таким индексом")
+    
     def _list_tasks(self, only_done: bool | None = None, category: str | None = None) -> list[Task]:
         result = self._tasks
 
         if only_done is True:
-            result = [temp for temp in result if temp.done]
+            result = [temp for temp in result if temp.status]
         elif only_done is False:
-            result = [temp for temp in result if not temp.done]
+            result = [temp for temp in result if not temp.status]
 
         if category is not None:
             result = [temp for temp in result if temp.category == category]
-
         return result
 
     def __len__(self):
@@ -116,12 +132,13 @@ if __name__ == '__main__':
                 "1 - Показать все задачи\n" \
                 "2 - Добавить задачу и категорию\n" \
                 "3 - Удалить задачу\n" \
-                "4 - Вывести все выполненные задачи\n" \
-                "5 - Вывести все невыполненные задачи\n" \
-                "6 - Вывести все задачи с заданной категорией\n" \
+                "4 - Выполнить задачу\n" \
+                "5 - Убрать отметку о выполнении у задачи\n" \
+                "6 - Вывести все выполненные задачи\n" \
+                "7 - Вывести все невыполненные задачи\n" \
+                "8 - Вывести все задачи с заданной категорией\n" \
                 "0 - Выход"
             )
-        
         choice = input("Выберите пункт: ").strip()
 
         if choice == "1":
@@ -131,7 +148,7 @@ if __name__ == '__main__':
             input("\nНажмите любую кнопку для продолжения...")
         elif choice == "2":
             description = input("Введите описание задачи: ").strip()
-            cat = input("Введите категорию: ")
+            cat = input("Введите категорию: ").strip().lower()
             
             if cat[0] != "#":
                 cat = '#' + cat
@@ -139,18 +156,77 @@ if __name__ == '__main__':
             tracker._add_task(description, category=cat)
 
             print("Задача добавлена.")
-            input("\nНажмите любую кнопку для продолжения...")            
-
+            input("\nНажмите любую кнопку для продолжения...")          
         elif choice == "3":
-            s
+            for i, task in enumerate(tracker, start=1):
+                print(i, task)
+    
+            ind_del = int(input("Введите номер задачи, которую хотите удалить: ")) - 1
+            tracker._remove_task(ind_del)
+
+            print("Задача удалена.")
+            input("\nНажмите любую кнопку для продолжения...")
         elif choice == "4":
-            s 
+            print("\nЗадачи:")
+            for i, task in enumerate(tracker, start=1):
+                print(i, task)
+            
+            done_task_by_index = int(input("\nВведите номер задачи, которую выполнили: ")) - 1
+
+            tracker._task_done(done_task_by_index)
+            print("Задача выполнена.")
+            input("\nНажмите любую кнопку для продолжения...")
         elif choice == "5":
-            s 
+            print("\nЗадачи:")
+            for i, task in enumerate(tracker, start=1):
+                print(i, task)
+            
+            undone_task_by_index = int(input("\nВведите номер задачи, где хотите убрать статус о выполнении: ")) - 1
+
+            tracker._task_undone(undone_task_by_index)
+            print("Статус изменен.")
+            input("\nНажмите любую кнопку для продолжения...")
         elif choice == "6":
-            s
+            done_tasks = tracker._list_tasks(only_done=True)
+
+            if not done_tasks:
+                print("Нет выполненных задач.")
+            else:
+                for i, task in enumerate(done_tasks, start=1):
+                    print(i, task)
+
+            input("\nНажмите любую кнопку для продолжения...")
+        elif choice == "7":
+            undone_tasks = tracker._list_tasks(only_done=False)
+
+            if not undone_tasks:
+                print("Нет невыполненных задач.")
+            else:
+                print("Невыполненные задачи:")
+                for i, task in enumerate(undone_tasks, start=1):
+                    print(i, task)
+
+            input("\nНажмите любую кнопку для продолжения...")
+        elif choice == "8":
+            cat = input("\nВведите категорию: ").strip().lower()
+            if cat[0] != "#":
+                cat = '#' + cat
+
+            cat.lower()
+
+            cat_tasks = tracker._list_tasks(category=cat)
+            
+            if not cat_tasks:
+                print(f"Нет задач с категорией {cat}")
+            else:
+                print(f"Задачи с категорией {cat}:")
+                for i, task in enumerate(cat_tasks, start=1):
+                    print(i, task)
+
+            input("\nНажмите любую кнопку для продолжения...")
         elif choice == "0":
             break
+        else:
+            print("Данного пункта нет в меню.")
 
-    print("\nОбновление задач...")
     tracker._save_to_file(FILENAME)

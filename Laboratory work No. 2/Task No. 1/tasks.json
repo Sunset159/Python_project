@@ -5,18 +5,23 @@
     "category": "#учёба"
   },
   {
-    "description": "Сходить в зал",
-    "status": true,
-    "category": "#спорт"
-  },
-  {
     "description": "Посмотреть фильм",
     "status": false,
     "category": "#отдых"
   },
   {
-    "description": "тренировка",
+    "description": "Посмотреть сериал",
+    "status": false,
+    "category": "#отдых"
+  },
+  {
+    "description": "Баскетбол",
     "status": false,
     "category": "#спорт"
+  },
+  {
+    "description": "Купить билеты на самолет",
+    "status": false,
+    "category": "#отдых"
   }
 ]
